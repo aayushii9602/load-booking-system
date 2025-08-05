@@ -3,6 +3,8 @@ package com.loadbookingsystem.entity;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +17,7 @@ import lombok.Data;
 @Entity
 @Table(name = "loads")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LoadEntity {
 
 	@Id
