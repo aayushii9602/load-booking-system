@@ -25,11 +25,11 @@ public class LoadController {
 
 	@PostMapping
 	public LoadEntity createLoad(@RequestBody LoadEntity load) {
-		return this.loadServiceImpl.createLoad(load);
+		return this.loadServiceImpl.createOrUpdateLoad(load);
 	}
 
 	@GetMapping("/{id}")
-	public LoadEntity getLoadById(@PathVariable UUID id) {
+	public LoadEntity getLoadById(@PathVariable("id") UUID id) {
 		return this.loadServiceImpl.getLoadById(id);
 	}
 
@@ -39,8 +39,8 @@ public class LoadController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<LoadEntity> updateLoad(@PathVariable UUID id, @RequestBody LoadEntity updatedLoad) {
-		LoadEntity result = this.loadServiceImpl.updateLoad(id, updatedLoad);
+	public ResponseEntity<LoadEntity> updateLoad(@RequestBody LoadEntity updatedLoad) {
+		LoadEntity result = this.loadServiceImpl.createOrUpdateLoad(updatedLoad);
 		return ResponseEntity.ok(result);
 	}
 

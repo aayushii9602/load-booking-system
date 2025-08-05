@@ -18,15 +18,17 @@ public class LoadServiceImpl implements LoadService {
 	private LoadRepository loadRepository;
 
 	@Override
-	public LoadEntity createLoad(LoadEntity load) {
-		load.setStatus(LoadStatus.POSTED);
-		load.setDatePosted(new Timestamp(System.currentTimeMillis()));
+	public LoadEntity createOrUpdateLoad(LoadEntity load) {
+		if (load.getId() == null || !loadRepository.existsById(load.getId())) {
+			load.setStatus(LoadStatus.POSTED);
+			load.setDatePosted(new Timestamp(System.currentTimeMillis()));
+		}
 		return this.loadRepository.save(load);
 	}
 
 	@Override
 	public LoadEntity getLoadById(UUID id) {
-		return this.loadRepository.getById(id);
+		return loadRepository.findById(id).orElseThrow(() -> new RuntimeException("Load not found"));
 	}
 
 	@Override
@@ -37,24 +39,6 @@ public class LoadServiceImpl implements LoadService {
 	@Override
 	public void deleteLoad(UUID id) {
 		this.loadRepository.deleteById(id);
-	}
-
-	@Override
-	public LoadEntity updateLoad(UUID id, LoadEntity updatedLoad) {
-		return loadRepository.findById(id).map(existingLoad -> {
-			existingLoad.setShipperId(updatedLoad.getShipperId());
-			existingLoad.setLoadingPoint(updatedLoad.getLoadingPoint());
-			existingLoad.setUnloadingPoint(updatedLoad.getUnloadingPoint());
-			existingLoad.setLoadingDate(updatedLoad.getLoadingDate());
-			existingLoad.setUnloadingDate(updatedLoad.getUnloadingDate());
-			existingLoad.setProductType(updatedLoad.getProductType());
-			existingLoad.setTruckType(updatedLoad.getTruckType());
-			existingLoad.setNoOfTrucks(updatedLoad.getNoOfTrucks());
-			existingLoad.setWeight(updatedLoad.getWeight());
-			existingLoad.setComment(updatedLoad.getComment());
-			// Don't update status directly unless needed
-			return loadRepository.save(existingLoad);
-		}).orElseThrow(() -> new RuntimeException("Load not found with ID: " + id));
 	}
 
 }
